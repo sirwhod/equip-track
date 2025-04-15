@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/components/commons/app-sidebar"
 import { SiteHeader } from "@/components/commons/site-header"
+import { Providers } from "@/components/providers"
 import {
   SidebarInset,
   SidebarProvider,
@@ -22,16 +23,18 @@ export default async function Layout({
   const currentPage = orgSlug
 
   return (
-    <div className="[--header-height:calc(--spacing(14))]">
-      <SidebarProvider className="flex flex-col">
-        <SiteHeader orgSlug={orgSlug} currentPage={currentPage} />
-        <div className="flex flex-1">
-          <AppSidebar />
-          <SidebarInset>
-            {children}
-          </SidebarInset>
-        </div>
-      </SidebarProvider>
-    </div>
+    <Providers>
+      <div className="[--header-height:calc(--spacing(14))]">
+        <SidebarProvider className="flex flex-col">
+          <SiteHeader orgSlug={orgSlug} currentPage={currentPage} />
+          <div className="flex flex-1">
+            <AppSidebar />
+            <SidebarInset>
+              {children}
+            </SidebarInset>
+          </div>
+        </SidebarProvider>
+      </div>
+    </Providers>
   )
 }

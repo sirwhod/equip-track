@@ -1,0 +1,136 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Organization Organization[]
+  Equip        Equip[]
+  Scheduling   Scheduling[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  domain    String?  @unique
+  avatarUrl String?  @map("avatar_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  ownerId   String   @map("owner_id")
+
+  owner      User         @relation(fields: [ownerId], references: [id])
+  Equip      Equip[]
+  Scheduling Scheduling[]
+
+  @@map("organizations")
+}
+
+enum EquipStatus {
+  AVAILABLE
+  UNAVAILABLE
+}
+
+model Equip {
+  id           String      @id @default(uuid())
+  name         String
+  serialNumber String?     @unique
+  nickname     String?
+  status       EquipStatus @default(AVAILABLE)
+  slug         String      @unique
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+  creator        User         @relation(fields: [creatorId], references: [id])
+  creatorId      String       @map("creator_id")
+  Scheduling     Scheduling[]
+
+  @@map("equip")
+}
+
+enum SchedulingStatus {
+  PENDING
+  INPROGRESS
+  CANCELED
+}
+
+model Scheduling {
+  id           String           @id @default(uuid())
+  scheduleDate DateTime
+  returnDate   DateTime
+  requester    String
+  status       SchedulingStatus @default(PENDING)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  equip          Equip        @relation(fields: [equipId], references: [id], onDelete: Cascade)
+  equipId        String       @map("equip_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+  creator        User         @relation(fields: [creatorId], references: [id])
+  creatorId      String       @map("creator_id")
+
+  @@map("scheduling")
+}
