@@ -30,7 +30,7 @@ export function LoginForm({
                 <form
                   action={async () => {
                     "use server"
-                    await signIn("github")
+                    await signIn("github", { redirectTo: "/home" })
                   }}
                 >
                   <Button variant="outline" type="submit" className="w-full">

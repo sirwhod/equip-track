@@ -18,7 +18,7 @@ export function SiteHeader({
   orgSlug,
   currentPage
 }: {
-  orgSlug: string
+  orgSlug?: string | null 
   currentPage: string
 }) {
   const { toggleSidebar } = useSidebar()
@@ -37,12 +37,16 @@ export function SiteHeader({
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb className="hidden sm:block">
           <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="#">
-                {orgSlug}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
+            {orgSlug && (
+              <>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="#">
+                    {orgSlug}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+              </>
+            )}
             <BreadcrumbItem>
               <BreadcrumbPage>{currentPage}</BreadcrumbPage>
             </BreadcrumbItem>

@@ -6,8 +6,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { DataTable } from "./equips/data-table"
-import { columns, Equips } from "./equips/equip-columns"
+import { DataTable } from "@/components/equips/data-table"
+import { columns, Equips } from "@/components/equips/equip-columns"
 
 async function getData(): Promise<Equips[]> {
   return [
