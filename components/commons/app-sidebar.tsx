@@ -29,11 +29,6 @@ import {
 } from "@/components/ui/sidebar"
 
 const data = {
-  user: {
-    name: "Rodrigo Brandão",
-    email: "rbrandao@example.com",
-    avatar: "https://github.com/sirwhod.png",
-  },
   navMain: [
     {
       title: "Playground",
@@ -181,7 +176,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )
